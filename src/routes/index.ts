@@ -5,8 +5,7 @@ const routes: Router = Router();
 
 routes.use('/api/images', imagesRoute);
 
-routes.get('*', (req: Request, res: Response): void => {
-  res.status(404);
+routes.get('/', (req: Request, res: Response): void => {
   res.send(`<h2> Usage: </h2>
             <ul>
               <li>Retrieve all available images from API in JSON format:</li>
@@ -20,6 +19,11 @@ routes.get('*', (req: Request, res: Response): void => {
                   http://localhost:3000/api/images?filename=fjord&width=250&height=250</a>
                 </ul>
              </ul> `);
+});
+
+// redirect user to main page for non used/supported endpoints
+routes.get('*', (req: Request, res: Response): void => {
+  res.redirect('/');
 });
 
 export default routes;
