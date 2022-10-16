@@ -40,7 +40,7 @@ describe('Testing Endpoints Response', (): void => {
     const response = await request.get('/api/images?filename');
     expect(response.status).toBe(401);
     expect(JSON.parse(response.text).Error).toEqual(
-      'You should include a filename query parameters'
+      'You should include a valid filename query parameters'
     );
   });
 

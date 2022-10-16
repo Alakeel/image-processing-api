@@ -10,9 +10,9 @@ export const validation = (req: Request, res: Response, next: NextFunction): unk
   };
 
   if (Object.values(req.query).length > 0) {
-    if (filename.length === 0)
+    if (filename === undefined || filename.length === 0)
       return res.status(401).send({
-        Error: 'You should include a filename query parameters'
+        Error: 'You should include a valid filename query parameters'
       });
     else if (!isNumber(width) || !isNumber(height) || parseInt(width) < 1 || parseInt(height) < 1)
       return res.status(401).send({
