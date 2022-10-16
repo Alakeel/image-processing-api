@@ -6,7 +6,7 @@ import { resizeImage } from '../../utilities/imageProcessing';
 
 const route: Router = Router();
 
-route.get('/', validation, (req: Request, res: Response) => {
+route.get('/', validation, (req: Request, res: Response): unknown => {
   const filename: string = req.query.filename as string;
   const width: number = parseInt(req.query.width as string);
   const height: number = parseInt(req.query.height as string);
@@ -31,7 +31,9 @@ route.get('/', validation, (req: Request, res: Response) => {
 
   // if image doesn't exists exists
   if (!fs.existsSync(imagePath)) {
-    return res.status(404).send('Image does not exists');
+    return res.status(404).send({
+      Error: 'Image does not exists, please check the available images at /api/images endpoint'
+    });
   }
 
   // if the image already in thumb folder with same width and height return it, otherwise create a new one (this would improve server performance )
@@ -46,7 +48,9 @@ route.get('/', validation, (req: Request, res: Response) => {
       return res.status(200).sendFile(result as string);
     })
     .catch(() => {
-      return res.status(401).send('Error processing image.. try again later.');
+      return res.status(500).send({
+        Error: 'processing selected image not accepted .. please try again later.'
+      });
     });
 });
 

@@ -26,24 +26,34 @@ afterAll(() => {
 });
 
 describe('Testing Endpoints Response', (): void => {
-  it('Get /api/images endpoint - without filename', async (): Promise<void> => {
-    const response = await request.get('/api/images?filename');
-    expect(response.text).toEqual('You should include filename');
+  it('Get /api/images endpoint - return 200 OK', async (): Promise<void> => {
+    const response = await request.get('/api/images');
+    expect(response.status).toBe(200);
   });
 
-  it('Get /api/images?filename=fjord&width=500&height=500 - return 200 success ', async (): Promise<void> => {
+  it('Get /api/images?filename=fjord&width=500&height=500 - return 200 OK ', async (): Promise<void> => {
     const response = await request.get('/api/images?filename=fjord&width=500&height=500');
     expect(response.status).toBe(200);
+  });
+
+  it('Get /api/images?random endpoint - return error for no filename query', async (): Promise<void> => {
+    const response = await request.get('/api/images?filename');
+    expect(response.status).toBe(401);
+    expect(JSON.parse(response.text).Error).toEqual(
+      'You should include a filename query parameters'
+    );
   });
 
   it('Get /api/images?filename=fjord&width=500&height=500 - thumb is created using endpoint', (): void => {
     expect(fs.existsSync(path.join(thumbFolderPath, 'fjord-thumb-500-500.jpg'))).toEqual(true);
   });
 
-  it('Get /api/images?filename=unknown endpoint - test non existing image filename ', async () => {
+  it('Get /api/images?filename=unknown endpoint - return error for non existing image filename ', async () => {
     const response = await request.get('/api/images?filename=unknown&width=500&height=500');
     expect(response.status).toBe(404);
-    expect(response.text).toEqual('Image does not exists');
+    expect(JSON.parse(response.text).Error).toEqual(
+      'Image does not exists, please check the available images at /api/images endpoint'
+    );
   });
 });
 
